@@ -1,0 +1,165 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        body {
+            padding-top: 60px;
+        }
+    </style>
+    <link href="css/bootstrap-responsive.min.css" rel="stylesheet" />
+    <style>
+        .ko-multiselect-container ul {
+            margin: 0;
+            padding: 0;
+        }
+
+        .ko-multiselect-inner-container {
+            padding: 2px;
+        }
+
+        .ko-multiselect-controls {
+            margin-bottom: 5px;
+        }
+
+        .ko-multiselect-options li {
+            list-style: none;
+            padding: 3px;
+            padding-bottom: 1px;
+            text-align: left;
+        }
+
+            .ko-multiselect-options li input[type="checkbox"] {
+                margin-top: -2px;
+            }
+
+            .ko-multiselect-options li:hover {
+                cursor: pointer;
+                user-select: none;
+                height: 100%;
+                color: #ffffff;
+                background-color: #006dcc;
+                *background-color: #0044cc;
+                background-image: -moz-linear-gradient(top, #0088cc, #0044cc);
+                background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#0088cc), to(#0044cc));
+                background-image: -webkit-linear-gradient(top, #0088cc, #0044cc);
+                background-image: -o-linear-gradient(top, #0088cc, #0044cc);
+                background-image: linear-gradient(to bottom, #0088cc, #0044cc);
+                background-repeat: repeat-x;
+                border-color: #0044cc #0044cc #002a80;
+                border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+                filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff0088cc', endColorstr='#ff0044cc', GradientType=0);
+                filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
+            }
+    </style>
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="navbar-inner">
+            <div class="container">
+                <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="brand" href="#">Knockout Multiselect</a>
+                <div class="nav-collapse collapse">
+                    <ul class="nav">
+                        <li class="active"><a href="#">Home</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+
+        <h1>Knockout Multiselect</h1>
+        <hr />
+        <pre data-bind="text: ko.toJSON($data)"></pre>
+        <div data-bind="multiselect: vm1"></div>
+                <div data-bind="multiselect: vm2"></div>
+        <hr />
+    </div>
+    <script src="js/jquery-1.9.1.min.js.js"></script>
+    <script src="js/knockout-2.2.1.debug.js.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/knockout-multiselect.js"></script>
+    <script type="text/html" id="ko-multiselect-template">
+        <div class="btn-group ko-multiselect-container">
+            <button type="button" class="dropdown-toggle btn" data-toggle="dropdown">Select <b class="caret"></b></button>
+            <div class="dropdown-menu text-center ko-multiselect-inner-container">
+                <!-- ko if: enableSearch -->
+                <div class="input-prepend input-block-level ko-multiselect-search">
+                    <span class="add-on"><i class="icon-search"></i></span>
+                    <input type="text" placeholder="Search" data-bind="value: filter, valueUpdate: 'afterkeydown'">
+                </div>
+                <!-- /ko -->
+                <!-- ko if: enableSelectAll -->
+                <div class="btn-group ko-multiselect-controls">
+                    <button class="btn" data-bind="click: selectAll"><i class="icon-check"></i>&nbsp;Select All</button>
+                    <button class="btn" data-bind="click: clearSelected"><i class="icon-ban-circle"></i>&nbsp;Clear</button>
+                </div>
+                <!-- /ko -->
+                <ul class="ko-multiselect-options" data-bind="foreach: options">
+                    <li>
+                        <label>
+                            <input type="checkbox" data-bind="attr: { name: $data }, value: $data, checked: $root.selectedOptions" />&nbsp;<span data-bind="    text: $data"></span></label></li>
+                </ul>
+            </div>
+        </div>
+    </script>
+    <script>
+        var vm = function () {
+            var self = this;
+            self.options = ko.observableArray([
+                'Guitar',
+                'Piano',
+                'Drums',
+                'Bass',
+                'Violin',
+                'Viola',
+                'Cello'
+            ]);
+            self.originalOptions = ko.observableArray(self.options());
+
+            self.filter = ko.observable('');
+            self.filter.subscribe(function (newValue) {
+
+                if (!newValue) {
+                    self.options(self.originalOptions());
+                    return;
+                }
+
+                self.options([]);
+                var array = self.originalOptions();
+                for (var i = 0; i < array.length; i++) {
+                    var item = array[i];
+                    if (item.substring(0, self.filter().length).toLowerCase() == self.filter().toLowerCase()) {
+                        self.options.push(item);
+                    }
+                }
+            });
+            self.enableSearch = ko.observable(true);
+            self.enableSelectAll = ko.observable(true);
+            self.selectedOptions = ko.observableArray([]);
+            self.selectAll = function () {
+                self.selectedOptions(self.options());
+            };
+            self.clearSelected = function () {
+                self.selectedOptions([]);
+            };
+        };
+
+        $(function () {
+            var viewModel =
+            {
+                vm1: new vm(),
+                vm2: new vm()
+            };
+            ko.applyBindings(viewModel);
+        });
+    </script>
+</body>
+</html>
