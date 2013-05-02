@@ -88,8 +88,8 @@
                 <pre data-bind="text: ko.toJSON($data, null, 2)"></pre>
             </div>
             <div class="span6">
-                <div data-bind="multiselect: vm1"></div>
-                <div data-bind="multiselect: vm2"></div>
+                <div data-bind="multiselect: filtro1"></div>
+                <div data-bind="multiselect: filtro2"></div>
             </div>
         </div>
 
@@ -118,7 +118,7 @@
                 <ul class="ko-multiselect-options" data-bind="foreach: options">
                     <li>
                         <label>
-                            <input type="checkbox" data-bind="attr: { name: $data }, value: $root.getValueFor($data), checked: $root.selectedOptions" />&nbsp;<span data-bind="text: $root.getTextFor($data)"></span>
+                            <input type="checkbox" data-bind="attr: { name: $data }, value: $root.getValueFor($data), checked: $root.selectedOptions" />&nbsp;<span data-bind="    text: $root.getTextFor($data)"></span>
                         </label>
                     </li>
                 </ul>
@@ -126,27 +126,21 @@
         </div>
     </script>
     <script>
-        var vm = function () {
+        var knockoutMultiSelectViewModel = function (parameters) {
             var self = this;
-            self.originalOptions = ko.observableArray([
-                { value: 1, text: 'Guitar' },
-                { value: 2, text: 'Piano' },
-                { value: 3, text: 'Drums' },
-                { value: 4, text: 'Bass' },
-                { value: 5, text: 'Violin' },
-                { value: 6, text: 'Viola' },
-                { value: 7, text: 'Cello' }
-            ]);
-            self.options = ko.observableArray(self.originalOptions());
-            self.selectedOptions = ko.observableArray([]);
+            //knockout options
+            self.options = ko.observableArray(parameters.options || []);
+            self.selectedOptions = ko.observableArray(parameters.selectedOptions || []);
+            self.optionsText = parameters.optionsText || '';
+            self.optionsValue = parameters.optionsValue || '';
 
-            self.optionsText = 'text';
-            self.optionsValue = '';
-            
+            //custom options
+            self.originalOptions = ko.observableArray(parameters.options || []);
+
 
             self.filter = ko.observable('');
-            self.enableSearch = ko.observable(true);
-            self.enableSelectAll = ko.observable(true);
+            self.enableSearch = ko.observable(parameters.enableSearch || false);
+            self.enableSelectAll = ko.observable(parameters.enableSelectAll || false);
 
             self.selectAll = function () {
                 if (!(self.optionsValue || self.optionsText)) {
@@ -168,7 +162,7 @@
                 if (self.optionsValue || self.optionsText) return data[self.optionsValue || self.optionsText];
                 return data;
             };
-            
+
             self.getTextFor = function (data) {
                 if (self.optionsText) return data[self.optionsText];
                 return data;
@@ -185,7 +179,7 @@
                 var array = self.originalOptions();
                 for (var i = 0; i < array.length; i++) {
                     var item = array[i];
-                    if (item.substring(0, self.filter().length).toLowerCase() == self.filter().toLowerCase()) {
+                    if (self.getTextFor(item).substring(0, self.filter().length).toLowerCase() == self.filter().toLowerCase()) {
                         self.options.push(item);
                     }
                 }
@@ -195,8 +189,21 @@
         $(function () {
             var viewModel =
             {
-                vm1: new vm(),
-                vm2: new vm()
+                filtro1: new knockoutMultiSelectViewModel({
+                    options: [{ value: 1, text: 'Guitar' }, { value: 2, text: 'Piano' }, { value: 3, text: 'Drums' }, { value: 4, text: 'Bass' }, { value: 5, text: 'Violin' }, { value: 6, text: 'Viola' }, { value: 7, text: 'Cello' }],
+                    optionsText: 'text',
+                    optionsValue: 'value',
+                    enableSearch: true,
+                    enableSelectAll: true
+                }),
+                filtro2: new knockoutMultiSelectViewModel({
+                    options: [{ value: 1, text: 'Ajax' }, { value: 2, text: 'JavaScript' }, { value: 3, text: 'C#' }, { value: 4, text: 'ASP.NET' }],
+                    optionsText: 'text',
+                    optionsValue: 'value',
+                    enableSearch: true,
+                    enableSelectAll: true
+                })
+                
             };
             ko.applyBindings(viewModel);
         });
