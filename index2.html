@@ -141,7 +141,7 @@
             self.selectedOptions = ko.observableArray([]);
 
             self.optionsText = 'text';
-            self.optionsValue = 'value';
+            self.optionsValue = '';
             
 
             self.filter = ko.observable('');
@@ -149,14 +149,14 @@
             self.enableSelectAll = ko.observable(true);
 
             self.selectAll = function () {
-                if (!self.optionsValue) {
+                if (!(self.optionsValue || self.optionsText)) {
                     self.selectedOptions(self.options());
                     return;
                 }
 
                 self.selectedOptions([]);
                 $.each(self.options(), function (index, value) {
-                    self.selectedOptions.push(value[self.optionsValue].toString());
+                    self.selectedOptions.push(value[self.optionsValue || self.optionsText].toString());
                 });
             };
 
@@ -165,7 +165,7 @@
             };
 
             self.getValueFor = function (data) {
-                if (self.optionsValue) return data[self.optionsValue];
+                if (self.optionsValue || self.optionsText) return data[self.optionsValue || self.optionsText];
                 return data;
             };
             
