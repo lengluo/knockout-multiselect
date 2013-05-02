@@ -77,77 +77,18 @@
         </div>
     </script>
     <script>
-        var knockoutMultiSelectViewModel = function (parameters) {
-            var self = this;
-            //knockout options
-            self.options = ko.observableArray(parameters.options || []);
-            self.selectedOptions = ko.observableArray(parameters.selectedOptions || []);
-            self.optionsText = parameters.optionsText || '';
-            self.optionsValue = parameters.optionsValue || '';
-
-            //custom options
-            self.originalOptions = ko.observableArray(parameters.options || []);
-
-
-            self.filter = ko.observable('');
-            self.enableSearch = ko.observable(parameters.enableSearch || false);
-            self.enableSelectAll = ko.observable(parameters.enableSelectAll || false);
-
-            self.selectAll = function () {
-                if (!(self.optionsValue || self.optionsText)) {
-                    self.selectedOptions(self.options());
-                    return;
-                }
-
-                self.selectedOptions([]);
-                $.each(self.options(), function (index, value) {
-                    self.selectedOptions.push(value[self.optionsValue || self.optionsText].toString());
-                });
-            };
-
-            self.clearSelected = function () {
-                self.selectedOptions([]);
-            };
-
-            self.getValueFor = function (data) {
-                if (self.optionsValue || self.optionsText) return data[self.optionsValue || self.optionsText];
-                return data;
-            };
-
-            self.getTextFor = function (data) {
-                if (self.optionsText) return data[self.optionsText];
-                return data;
-            };
-
-            self.filter.subscribe(function (newValue) {
-
-                if (!newValue) {
-                    self.options(self.originalOptions());
-                    return;
-                }
-
-                self.options([]);
-                var array = self.originalOptions();
-                for (var i = 0; i < array.length; i++) {
-                    var item = array[i];
-                    if (self.getTextFor(item).substring(0, self.filter().length).toLowerCase() == self.filter().toLowerCase()) {
-                        self.options.push(item);
-                    }
-                }
-            });
-        };
 
         $(function () {
             var viewModel =
             {
-                filtro1: new knockoutMultiSelectViewModel({
+                filtro1: new ko.knockoutMultiSelectViewModel({
                     options: [{ value: 1, text: 'Guitar' }, { value: 2, text: 'Piano' }, { value: 3, text: 'Drums' }, { value: 4, text: 'Bass' }, { value: 5, text: 'Violin' }, { value: 6, text: 'Viola' }, { value: 7, text: 'Cello' }],
                     optionsText: 'text',
                     optionsValue: 'value',
                     enableSearch: true,
                     enableSelectAll: true
                 }),
-                filtro2: new knockoutMultiSelectViewModel({
+                filtro2: new ko.knockoutMultiSelectViewModel({
                     options: [{ value: 1, text: 'Ajax' }, { value: 2, text: 'JavaScript' }, { value: 3, text: 'C#' }, { value: 4, text: 'ASP.NET' }],
                     optionsText: 'text',
                     optionsValue: 'value',
