@@ -3,30 +3,52 @@
 /// 
 ko.bindingHandlers.multiselect = {
     init: function (element, valueAccessor, allBindingsAccessor) {
-        console.log('init');
         var accessor = valueAccessor();
+        var opt = $(element)[0].options[0];
+
+        if (opt) {
+            accessor.originalOptions([]);
+            accessor.options([]);
+            $.each($(element)[0].options, function (index, value) {
+                if (!(accessor.optionsText || accessor.optionsValue)) {
+                    accessor.originalOptions.push(value.text);
+                    if (value.selected) accessor.selectedOptions.push(value.text);
+                } else {
+                    var option = {};
+                    if (accessor.optionsText) option[accessor.optionsText] = value.text;
+                    if (accessor.optionsValue) option[accessor.optionsValue || accessor.optionsText] = value.value || value.text;
+                    if (value.selected) accessor.selectedOptions.push(accessor.getValueFor(option));
+                    accessor.originalOptions.push(option);
+                }
+            });
+            accessor.options(accessor.originalOptions());
+        }
         ko.renderTemplate("ko-multiselect-template", accessor, {}, element, 'replaceNode');
-        console.log('init');
     },
     update: function (element, valueAccessor, allBindingsAccessor) {
-        console.log('update');
         $('.ko-multiselect-container .dropdown-menu *').on('click', function (e) {
             e.stopPropagation();
         });
-        console.log('update');
     }
 };
 
-    ko.knockoutMultiSelectViewModel = function (parameters) {
+ko.knockoutMultiSelectViewModel = function (parameters) {
     var self = this;
     //knockout options
     self.options = ko.observableArray(parameters.options || []);
     self.selectedOptions = ko.observableArray(parameters.selectedOptions || []);
     self.optionsText = parameters.optionsText || '';
     self.optionsValue = parameters.optionsValue || '';
+    self.buttonText = ko.computed(function() {
+        if (self.selectedOptions().length == 0) return 'Selecione';
+        if (self.selectedOptions().length == 1) return '1 selecionado';
+        return self.selectedOptions().length.toString() + ' selecionados';
+    });
 
     //custom options
     self.originalOptions = ko.observableArray(parameters.options || []);
+    self.containerClasses = parameters.containerClasses || {};
+    self.buttonClasses = parameters.buttonClasses || {};
 
 
     self.filter = ko.observable('');

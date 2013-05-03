@@ -10,56 +10,7 @@
         }
     </style>
     <link href="css/bootstrap-responsive.min.css" rel="stylesheet" />
-    <style>
-        .ko-multiselect-container ul
-        {
-            margin: 0;
-            padding: 0;
-        }
-
-        .ko-multiselect-inner-container
-        {
-            padding: 2px;
-        }
-
-        .ko-multiselect-controls
-        {
-            margin-bottom: 5px;
-        }
-
-        .ko-multiselect-options li
-        {
-            list-style: none;
-            padding: 3px;
-            padding-bottom: 1px;
-            text-align: left;
-        }
-
-            .ko-multiselect-options li input[type="checkbox"]
-            {
-                margin-top: -2px;
-            }
-
-            .ko-multiselect-options li:hover
-            {
-                cursor: pointer;
-                user-select: none;
-                height: 100%;
-                color: #ffffff;
-                background-color: #006dcc;
-                *background-color: #0044cc;
-                background-image: -moz-linear-gradient(top, #0088cc, #0044cc);
-                background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#0088cc), to(#0044cc));
-                background-image: -webkit-linear-gradient(top, #0088cc, #0044cc);
-                background-image: -o-linear-gradient(top, #0088cc, #0044cc);
-                background-image: linear-gradient(to bottom, #0088cc, #0044cc);
-                background-repeat: repeat-x;
-                border-color: #0044cc #0044cc #002a80;
-                border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
-                filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff0088cc', endColorstr='#ff0044cc', GradientType=0);
-                filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
-            }
-    </style>
+    <link href="css/knockout-multiselect.css" rel="stylesheet" />
 </head>
 <body>
     <div class="navbar navbar-inverse navbar-fixed-top">
@@ -88,8 +39,13 @@
                 <pre data-bind="text: ko.toJSON($data, null, 2)"></pre>
             </div>
             <div class="span6">
-                <div data-bind="multiselect: vm1"></div>
-                <div data-bind="multiselect: vm2"></div>
+                <select data-bind="multiselect: filtro1">
+                    <option value="1">ASP.NET</option>
+                    <option value="2">Ajax</option>
+                    <option value="3">Javascript</option>
+                    <option value="4">Ruby</option>
+                </select>
+                <!--<select data-bind="multiselect: filtro2"></select>-->
             </div>
         </div>
 
@@ -126,79 +82,25 @@
         </div>
     </script>
     <script>
-        var vm = function () {
-            var self = this;
-            //knockout options
-            self.options = ko.observableArray(self.originalOptions());
-            self.selectedOptions = ko.observableArray([]);
-            self.optionsText = 'text';
-            self.optionsValue = '';
-
-            //custom options
-            self.originalOptions = ko.observableArray([
-                { value: 1, text: 'Guitar' },
-                { value: 2, text: 'Piano' },
-                { value: 3, text: 'Drums' },
-                { value: 4, text: 'Bass' },
-                { value: 5, text: 'Violin' },
-                { value: 6, text: 'Viola' },
-                { value: 7, text: 'Cello' }
-            ]);
-
-
-            self.filter = ko.observable('');
-            self.enableSearch = ko.observable(true);
-            self.enableSelectAll = ko.observable(true);
-
-            self.selectAll = function () {
-                if (!(self.optionsValue || self.optionsText)) {
-                    self.selectedOptions(self.options());
-                    return;
-                }
-
-                self.selectedOptions([]);
-                $.each(self.options(), function (index, value) {
-                    self.selectedOptions.push(value[self.optionsValue || self.optionsText].toString());
-                });
-            };
-
-            self.clearSelected = function () {
-                self.selectedOptions([]);
-            };
-
-            self.getValueFor = function (data) {
-                if (self.optionsValue || self.optionsText) return data[self.optionsValue || self.optionsText];
-                return data;
-            };
-
-            self.getTextFor = function (data) {
-                if (self.optionsText) return data[self.optionsText];
-                return data;
-            };
-
-            self.filter.subscribe(function (newValue) {
-
-                if (!newValue) {
-                    self.options(self.originalOptions());
-                    return;
-                }
-
-                self.options([]);
-                var array = self.originalOptions();
-                for (var i = 0; i < array.length; i++) {
-                    var item = array[i];
-                    if (item.substring(0, self.filter().length).toLowerCase() == self.filter().toLowerCase()) {
-                        self.options.push(item);
-                    }
-                }
-            });
-        };
 
         $(function () {
             var viewModel =
             {
-                vm1: new vm(),
-                vm2: new vm()
+                filtro1: new ko.knockoutMultiSelectViewModel({
+                    //options: [{ value: 1, text: 'Guitar' }, { value: 2, text: 'Piano' }, { value: 3, text: 'Drums' }, { value: 4, text: 'Bass' }, { value: 5, text: 'Violin' }, { value: 6, text: 'Viola' }, { value: 7, text: 'Cello' }],
+                    optionsText: 'text',
+                    optionsValue: 'value',
+                    enableSearch: true,
+                    enableSelectAll: true
+                })
+                //filtro2: new ko.knockoutMultiSelectViewModel({
+                //    options: [{ value: 1, text: 'Ajax' }, { value: 2, text: 'JavaScript' }, { value: 3, text: 'C#' }, { value: 4, text: 'ASP.NET' }],
+                //    optionsText: 'text',
+                //    optionsValue: 'value',
+                //    enableSearch: true,
+                //    enableSelectAll: true
+                //})
+                
             };
             ko.applyBindings(viewModel);
         });
