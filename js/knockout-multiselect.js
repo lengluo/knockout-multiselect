@@ -5,7 +5,6 @@ ko.bindingHandlers.multiselect = {
     init: function (element, valueAccessor, allBindingsAccessor) {
         var accessor = valueAccessor();
         var opt = $(element)[0].options[0];
-               
         if (opt) {
             accessor.originalOptions([]);
             accessor.options([]);
@@ -17,6 +16,7 @@ ko.bindingHandlers.multiselect = {
                     var option = {};
                     if (accessor.optionsText) option[accessor.optionsText] = value.text;
                     if (accessor.optionsValue) option[accessor.optionsValue || accessor.optionsText] = value.value || value.text;
+                    if (accessor.optionsTooltip) option[accessor.optionsTooltip] = value.getAttribute('data-tooltip');
                     if (value.selected) accessor.selectedOptions.push(accessor.getValueFor(option));
                     accessor.originalOptions.push(option);
                 }
@@ -28,6 +28,10 @@ ko.bindingHandlers.multiselect = {
         
         $('.ko-multiselect-container .dropdown-menu').on('click', '*', function (e) {
             e.stopPropagation();
+        });
+        
+        $('.ko-multiselect-container').tooltip({
+            selector: '[data-toggle="tooltip"]'
         });
     },
     update: function (element, valueAccessor, allBindingsAccessor) {
@@ -41,6 +45,7 @@ ko.knockoutMultiSelectViewModel = function (parameters) {
     self.selectedOptions = ko.observableArray(parameters.selectedOptions || []);
     self.optionsText = parameters.optionsText || '';
     self.optionsValue = parameters.optionsValue || '';
+    self.optionsTooltip = parameters.optionsTooltip || '';
     self.buttonText = ko.computed(function () {
         if (self.selectedOptions().length == 0) return 'Selecione';
         if (self.selectedOptions().length == 1) return '1 selecionado';
@@ -80,6 +85,11 @@ ko.knockoutMultiSelectViewModel = function (parameters) {
 
     self.getTextFor = function (data) {
         if (self.optionsText) return data[self.optionsText];
+        return data;
+    };
+
+    self.getTooltipFor = function (data) {
+        if (self.optionsTooltip) return data[self.optionsTooltip];
         return data;
     };
 

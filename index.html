@@ -37,10 +37,10 @@
         <div class="row">
             <div class="span6">
                 <select data-bind="multiselect: filtro1">
-                    <option value="1">ASP.NET</option>
-                    <option value="2">Ajax</option>
-                    <option value="3">Javascript</option>
-                    <option value="4">Ruby</option>
+                    <option value="1" data-tooltip="ASP.NET Tooltip">ASP.NET</option>
+                    <option value="2" data-tooltip="Ajax Tooltip">Ajax</option>
+                    <option value="3" data-tooltip="Javascript Tooltip">Javascript</option>
+                    <option value="4" data-tooltip="Ruby Tooltip">Ruby</option>
                 </select>
                 <select data-bind="multiselect: filtro2"></select>
             </div>
@@ -72,9 +72,9 @@
                 </div>
                 <!-- /ko -->
                 <ul class="ko-multiselect-options" data-bind="foreach: options">
-                    <li>
+                    <li data-toggle="tooltip" data-bind="attr: { 'data-original-title': $root.getTooltipFor($data) }">
                         <label>
-                            <input type="checkbox" data-bind="attr: { name: $data }, value: $root.getValueFor($data), checked: $root.selectedOptions" />&nbsp;<span data-bind="    text: $root.getTextFor($data)"></span>
+                            <input type="checkbox" data-bind="attr: { name: $data }, value: $root.getValueFor($data), checked: $root.selectedOptions" />&nbsp;<span data-bind="text: $root.getTextFor($data)"></span>
                         </label>
                     </li>
                 </ul>
@@ -83,19 +83,26 @@
     </script>
     <script>
 
-        $(function () {
+        $(function () {          
             var viewModel =
             {
                 filtro1: new ko.knockoutMultiSelectViewModel({
                     optionsText: 'text',
                     optionsValue: 'value',
+                    optionsTooltip: 'tooltip',
                     enableSearch: true,
                     enableSelectAll: true
                 }),
                 filtro2: new ko.knockoutMultiSelectViewModel({
-                    options: [{ value: 1, text: 'Ajax' }, { value: 2, text: 'JavaScript' }, { value: 3, text: 'C#' }, { value: 4, text: 'ASP.NET' }],
+                    options: [
+                        { value: 1, text: 'Ajax', tooltip: 'Ajax Tooltip' },
+                        { value: 2, text: 'JavaScript', tooltip: 'JavaScript tooltip' },
+                        { value: 3, text: 'C#', tooltip: 'C# tooltip' },
+                        { value: 4, text: 'ASP.NET', tooltip: 'ASP.NET tooltip' }
+                    ],
                     optionsText: 'text',
                     optionsValue: 'value',
+                    optionsTooltip: 'tooltip',
                     enableSearch: true,
                     enableSelectAll: true
                 })
