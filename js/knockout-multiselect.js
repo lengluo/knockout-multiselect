@@ -5,7 +5,7 @@ ko.bindingHandlers.multiselect = {
     init: function (element, valueAccessor, allBindingsAccessor) {
         var accessor = valueAccessor();
         var opt = $(element)[0].options[0];
-
+               
         if (opt) {
             accessor.originalOptions([]);
             accessor.options([]);
@@ -23,12 +23,14 @@ ko.bindingHandlers.multiselect = {
             });
             accessor.options(accessor.originalOptions());
         }
+        
         ko.renderTemplate("ko-multiselect-template", accessor, {}, element, 'replaceNode');
-    },
-    update: function (element, valueAccessor, allBindingsAccessor) {
-        $('.ko-multiselect-container .dropdown-menu *').on('click', function (e) {
+        
+        $('.ko-multiselect-container .dropdown-menu').on('click', '*', function (e) {
             e.stopPropagation();
         });
+    },
+    update: function (element, valueAccessor, allBindingsAccessor) {
     }
 };
 
@@ -39,7 +41,7 @@ ko.knockoutMultiSelectViewModel = function (parameters) {
     self.selectedOptions = ko.observableArray(parameters.selectedOptions || []);
     self.optionsText = parameters.optionsText || '';
     self.optionsValue = parameters.optionsValue || '';
-    self.buttonText = ko.computed(function() {
+    self.buttonText = ko.computed(function () {
         if (self.selectedOptions().length == 0) return 'Selecione';
         if (self.selectedOptions().length == 1) return '1 selecionado';
         return self.selectedOptions().length.toString() + ' selecionados';
@@ -81,6 +83,14 @@ ko.knockoutMultiSelectViewModel = function (parameters) {
         return data;
     };
 
+    self.stringContains = function(str, filter) {
+        return str.indexOf(filter) != -1;
+    };
+    
+    self.stringContainsCaseInsensitive = function (str, filter) {
+        return self.stringContains(str.toLowerCase(), filter.toLowerCase());
+    };
+
     self.filter.subscribe(function (newValue) {
 
         if (!newValue) {
@@ -92,7 +102,7 @@ ko.knockoutMultiSelectViewModel = function (parameters) {
         var array = self.originalOptions();
         for (var i = 0; i < array.length; i++) {
             var item = array[i];
-            if (self.getTextFor(item).substring(0, self.filter().length).toLowerCase() == self.filter().toLowerCase()) {
+            if (self.stringContainsCaseInsensitive(self.getTextFor(item), self.filter())) {
                 self.options.push(item);
             }
         }
