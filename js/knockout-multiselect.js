@@ -90,7 +90,7 @@ ko.knockoutMultiSelectViewModel = function (parameters) {
 
     self.getTooltipFor = function (data) {
         if (self.optionsTooltip) return data[self.optionsTooltip];
-        return data;
+        return null;
     };
 
     self.stringContains = function(str, filter) {
