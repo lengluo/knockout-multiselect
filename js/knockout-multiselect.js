@@ -23,13 +23,18 @@ ko.bindingHandlers.multiselect = {
             });
             accessor.options(accessor.originalOptions());
         }
-        
+
         ko.renderTemplate("ko-multiselect-template", accessor, {}, element, 'replaceNode');
-        
+
         $('.ko-multiselect-container .dropdown-menu').on('click', '*', function (e) {
             e.stopPropagation();
+            var $this = $(this);
+            if ($this.hasClass('make-active')) {
+                $this.parent().find('.btn').removeClass('active');
+                $this.addClass('active');
+            }
         });
-        
+
         $('.ko-multiselect-container').tooltip({
             selector: '[data-toggle="tooltip"]'
         });
@@ -61,6 +66,10 @@ ko.knockoutMultiSelectViewModel = function (parameters) {
     self.filter = ko.observable('');
     self.enableSearch = ko.observable(parameters.enableSearch || false);
     self.enableSelectAll = ko.observable(parameters.enableSelectAll || false);
+    self.enableSelectAllView = ko.observable(parameters.enableSelectAllView || false);
+    
+
+    self.showSelected = ko.observable(false);
 
     self.selectAll = function () {
         if (!(self.optionsValue || self.optionsText)) {
@@ -69,9 +78,11 @@ ko.knockoutMultiSelectViewModel = function (parameters) {
         }
 
         self.selectedOptions([]);
+        var items = [];
         $.each(self.options(), function (index, value) {
-            self.selectedOptions.push(value[self.optionsValue || self.optionsText].toString());
+            items.push(value[self.optionsValue || self.optionsText].toString());
         });
+        self.selectedOptions(items);
     };
 
     self.clearSelected = function () {
@@ -87,16 +98,23 @@ ko.knockoutMultiSelectViewModel = function (parameters) {
         if (self.optionsText) return data[self.optionsText];
         return data;
     };
+    
+    self.getTextForValue = function (data) {
+        var first = ko.utils.arrayFirst(self.originalOptions(), function (item) {
+            return self.getValueFor(item) == data;
+        });
+        return self.getTextFor(first);
+    };
 
     self.getTooltipFor = function (data) {
         if (self.optionsTooltip) return data[self.optionsTooltip];
         return null;
     };
 
-    self.stringContains = function(str, filter) {
+    self.stringContains = function (str, filter) {
         return str.indexOf(filter) != -1;
     };
-    
+
     self.stringContainsCaseInsensitive = function (str, filter) {
         return self.stringContains(str.toLowerCase(), filter.toLowerCase());
     };

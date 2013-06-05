@@ -14,6 +14,16 @@
 	margin-bottom: 5px;
 }
 
+.ko-multiselect-toggle-view
+
+.ko-multiselect-selected-options li {
+	list-style: none;
+	padding: 5px;
+	padding-left: 15px;
+	padding-bottom: 1px;
+	text-align: left;
+}
+
 .ko-multiselect-options li
 {
 	list-style: none;
