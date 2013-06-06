@@ -48,6 +48,9 @@ ko.knockoutMultiSelectViewModel = function (parameters) {
     //knockout options
     self.options = ko.observableArray(parameters.options || []);
     self.selectedOptions = ko.observableArray(parameters.selectedOptions || []);
+    self.orderedSelectedOptions = ko.computed(function () {
+        return self.selectedOptions().sort();
+    });
     self.optionsText = parameters.optionsText || '';
     self.optionsValue = parameters.optionsValue || '';
     self.optionsTooltip = parameters.optionsTooltip || '';
@@ -61,13 +64,14 @@ ko.knockoutMultiSelectViewModel = function (parameters) {
     self.originalOptions = ko.observableArray(parameters.options || []);
     self.containerClasses = parameters.containerClasses || {};
     self.buttonClasses = parameters.buttonClasses || {};
+    self.ulClasses = parameters.ulClasses || {};
 
 
     self.filter = ko.observable('');
     self.enableSearch = ko.observable(parameters.enableSearch || false);
     self.enableSelectAll = ko.observable(parameters.enableSelectAll || false);
     self.enableSelectAllView = ko.observable(parameters.enableSelectAllView || false);
-    
+
 
     self.showSelected = ko.observable(false);
 
@@ -98,7 +102,7 @@ ko.knockoutMultiSelectViewModel = function (parameters) {
         if (self.optionsText) return data[self.optionsText];
         return data;
     };
-    
+
     self.getTextForValue = function (data) {
         var first = ko.utils.arrayFirst(self.originalOptions(), function (item) {
             return self.getValueFor(item) == data;

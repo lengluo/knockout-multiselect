@@ -55,7 +55,7 @@
     <script src="js/knockout-2.2.1.debug.js.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/knockout-multiselect.js"></script>
- <script type="text/html" id="ko-multiselect-template">
+    <script type="text/html" id="ko-multiselect-template">
         <div class="btn-group ko-multiselect-container" data-bind="css: containerClasses">
             <button type="button" class="dropdown-toggle btn" data-bind="css: buttonClasses" data-toggle="dropdown"><span data-bind="    text: buttonText"></span>&nbsp;<b class="caret"></b></button>
             <div class="dropdown-menu text-center ko-multiselect-inner-container">
@@ -78,7 +78,7 @@
                         <button class="btn" data-bind="click: clearSelected"><i class="icon-ban-circle"></i>&nbsp;Limpar</button>
                     </div>
                     <!-- /ko -->
-                    <ul class="ko-multiselect-options" data-bind="foreach: options">
+                    <ul class="ko-multiselect-options" data-bind="foreach: options, css: ulClasses">
                         <li data-toggle="tooltip" data-bind="attr: { 'data-original-title': $root.getTooltipFor($data) }">
                             <label>
                                 <input type="checkbox" data-bind="attr: { name: $data }, value: $root.getValueFor($data), checked: $root.selectedOptions" />&nbsp;<span data-bind="    text: $root.getTextFor($data)"></span>
@@ -87,7 +87,7 @@
                     </ul>
                 </div>
                 <div data-bind="visible: showSelected()">
-                    <ul class="ko-multiselect-selected-options" data-bind="foreach: selectedOptions">
+                    <ul class="ko-multiselect-selected-options" data-bind="foreach: orderedSelectedOptions">
                         <li data-bind="text: $root.getTextForValue($data)"></li>
                     </ul>
                 </div>
