@@ -14,8 +14,6 @@
 	margin-bottom: 5px;
 }
 
-.ko-multiselect-toggle-view
-
 .ko-multiselect-selected-options li {
 	list-style: none;
 	padding: 5px;
@@ -41,7 +39,6 @@
 	{
 		cursor: pointer;
 		user-select: none;
-		height: 100%;
 		color: #ffffff;
 		background-color: #006dcc;
 		*background-color: #0044cc;

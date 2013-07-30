@@ -57,12 +57,12 @@
     <script src="js/knockout-multiselect.js"></script>
     <script type="text/html" id="ko-multiselect-template">
         <div class="btn-group ko-multiselect-container" data-bind="css: containerClasses">
-            <button type="button" class="dropdown-toggle btn" data-bind="css: buttonClasses" data-toggle="dropdown"><span data-bind="    text: buttonText"></span>&nbsp;<b class="caret"></b></button>
+            <button type="button" class="dropdown-toggle btn" data-bind="css: buttonClasses, enable: btnEnable" data-toggle="dropdown"><span data-bind="    text: buttonText"></span>&nbsp;<b class="caret"></b></button>
             <div class="dropdown-menu text-center ko-multiselect-inner-container">
                 <!-- ko if: enableSelectAllView -->
                 <div class="btn-group ko-multiselect-controls" data-toggle="buttons-radio">
-                    <button type="button" class="btn active make-active" data-bind="click: function () { $data.showSelected(false); }">Disponíveis</button>
-                    <button type="button" class="btn make-active" data-bind="click: function () { $data.showSelected(true); }, enable: selectedOptions().length > 0">Selecionados</button>
+                    <button type="button" class="btn btn-small active make-active" data-bind="click: function () { $data.showSelected(false); }">Disponíveis</button>
+                    <button type="button" class="btn btn-small make-active" data-bind="click: function () { $data.showSelected(true); }, enable: selectedOptions().length > 0">Selecionados</button>
                 </div>
                 <!-- /ko -->
                 <div data-bind="visible: !showSelected()">
@@ -74,19 +74,19 @@
                     <!-- /ko -->
                     <!-- ko if: enableSelectAll -->
                     <div class="btn-group ko-multiselect-controls">
-                        <button class="btn" data-bind="click: selectAll"><i class="icon-check"></i>&nbsp;Todos</button>
-                        <button class="btn" data-bind="click: clearSelected"><i class="icon-ban-circle"></i>&nbsp;Limpar</button>
+                        <button class="btn btn-small" data-bind="click: selectAll"><i class="icon-check"></i>&nbsp;Todos</button>
+                        <button class="btn btn-small" data-bind="click: clearSelected"><i class="icon-ban-circle"></i>&nbsp;Limpar</button>
                     </div>
                     <!-- /ko -->
                     <ul class="ko-multiselect-options" data-bind="foreach: options, css: ulClasses">
-                        <li data-toggle="tooltip" data-bind="attr: { 'data-original-title': $root.getTooltipFor($data) }">
+                        <li rel="tooltip" data-placement="right" data-delay="500" data-container="body" data-bind="attr: { 'data-original-title': $root.getTooltipFor($data) }">
                             <label>
                                 <input type="checkbox" data-bind="attr: { name: $data }, value: $root.getValueFor($data), checked: $root.selectedOptions" />&nbsp;<span data-bind="    text: $root.getTextFor($data)"></span>
                             </label>
                         </li>
                     </ul>
                 </div>
-                <div data-bind="visible: showSelected()">
+                <div data-bind="visible: showSelected(), css: ulClasses">
                     <ul class="ko-multiselect-selected-options" data-bind="foreach: orderedSelectedOptions">
                         <li data-bind="text: $root.getTextForValue($data)"></li>
                     </ul>
@@ -95,10 +95,10 @@
         </div>
     </script>
     <script>
-
+        var viewModel;
 
         $(function () {
-            var viewModel =
+            viewModel =
             {
                 filtro1: new ko.knockoutMultiSelectViewModel({
                     optionsText: 'text',
