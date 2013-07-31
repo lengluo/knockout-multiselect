@@ -77,7 +77,8 @@
 
         });
 
-        self.filter = ko.observable('');
+        self.filter = ko.observable('').extend({ throttle: 250 });
+        self.lastFilter = '';
         self.enableSearch = ko.observable(parameters.enableSearch || false);
         self.enableSelectAll = ko.observable(parameters.enableSelectAll || false);
         self.enableSelectAllView = ko.observable(parameters.enableSelectAllView || false);
@@ -134,20 +135,24 @@
         };
 
         self.filter.subscribe(function (newValue) {
-
             if (!newValue) {
                 self.options(self.originalOptions());
+                self.lastFilter = newValue;
                 return;
             }
 
-            self.options([]);
-            var array = self.originalOptions();
+            var shouldUseOriginalArray = newValue.length < self.lastFilter.length || !self.stringContainsCaseInsensitive(newValue, self.lastFilter);
+
+            var array = shouldUseOriginalArray ? self.originalOptions() : self.options();
+            var filtered = [];
             for (var i = 0; i < array.length; i++) {
                 var item = array[i];
-                if (self.stringContainsCaseInsensitive(self.getTextFor(item), self.filter())) {
-                    self.options.push(item);
+                if (self.stringContainsCaseInsensitive(self.getTextFor(item), newValue)) {
+                    filtered.push(item);
                 }
             }
+            self.options(filtered);
+            self.lastFilter = newValue;
         });
     };
 }(ko));
